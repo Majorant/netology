@@ -23,7 +23,7 @@
 
 # определяем комментарии на полях повареной книги, читаем между строк
 def comment(string):
-    '''определяет комментарии на полях повареной книги, читаем между строк'''
+    '''определяет является ли строка комментарием'''
     if (string.strip()[0] == '#') or string == '':
         return True
     else:
@@ -32,9 +32,9 @@ def comment(string):
 
 # определяет, является ли строка названием блюда
 def isdish(string):
-    '''определяет, является ли строка названием блюда
+    '''определяет, является ли строка названием блюда:
     исключает пустые строки;
-    элементы, которые встречаются в игридиентах (|);
+    исключает элементы, которые встречаются в описании игридиентов (|);
     комментарии'''
     if string != '' and '|' not in string and not comment(string):
         return True
@@ -45,9 +45,8 @@ def isdish(string):
 # преобразуем ингридиенты из книги в словарь для использования
 # ингридиент | сколько | в чём измеряется
 def ingridients(string):
-    '''
-    преобразуем ингридиенты из книги в словарь для использования
-    формат ингридиентов в кулинарной книге:
+    '''преобразуем ингридиенты из книги в словарь
+    ожидаемый формат ингридиентов в кулинарной книге:
     ингридиент | сколько | в чём измеряется
     '''
     ingr_dic = {}
@@ -63,8 +62,7 @@ def ingridients(string):
 
 # из книги рецептов формируем словарь, который использовали на лекции.
 def recipes_from_cookbook(cookbook_file, dishes=[]):
-    '''из книги рецептов формируем словарь,
-    проверяет есть ли блюдо сегодня в меню'''
+    '''формирует словарь из книги рецептов, проверяет есть ли блюдо сегодня в меню'''
     recipes = {}
     with open(cookbook_file, 'r') as f:
         for line in f:
@@ -100,6 +98,7 @@ def recipes_from_cookbook(cookbook_file, dishes=[]):
 
 # определяем, какие блюда не смогли найти в книге
 def check_forgotten(recipes, dishes):
+    '''возвращает названия блюд, которых нет в повареной книге'''
     forgotten_dishes = []
     for dish in dishes:
         if dish not in recipes.keys():
@@ -109,8 +108,9 @@ def check_forgotten(recipes, dishes):
 
 # функция для получения списка продуктов для магазина
 def get_shop_list_by_dishes (dishes, person_count, cook_book):
-  shop_list = {}
-  for dish in dishes:
+    '''возвращает список продуктов для магазина'''
+    shop_list = {}
+    for dish in dishes:
     for ingridient in cook_book[dish]:
       new_shop_list_item = dict(ingridient)
       new_shop_list_item['quantity'] *= person_count
@@ -118,17 +118,19 @@ def get_shop_list_by_dishes (dishes, person_count, cook_book):
         shop_list[new_shop_list_item['ingridient_name']] = new_shop_list_item
       else:
         shop_list[new_shop_list_item['ingridient_name']]['quantity'] += new_shop_list_item['quantity']
-  return  shop_list
+    return  shop_list
 
 
 #  print('{} {} {}'.format(shopt_list_item['ingridient_name'], shopt_list_item['quantity'], shopt_list_item['measure']))
 def print_shop_list(shop_list):
+    '''выводит список продуктов для магазина на экран'''
     print('список продуктов:')
     for shopt_list_item in shop_list.values():
         print('{ingridient_name} {quantity} {measure}'.format(**shopt_list_item))
 
 # main function
 def create_shop_list():
+    '''основная функция'''
     try:
         person_count = int(input('введите количество человек: '))
     except ValueError:
