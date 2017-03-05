@@ -1,3 +1,10 @@
+# ДЗ 2.1
+# програма предлагает ввести количесто человек и блюда, которые они планируют приготовить
+# возвращает список ингридиентов, которые необходимо купить в магазине
+# ингридиенты получаем из файла с рецептами
+
+
+
 # яичница, 2 шт яиц, 100гр помидоров
 # стейк, мясо 300гр, специи 5 гр, масло 10 мл
 # салат, помидоры 100гр, огурцы 100 гр, масло 100мл, лук 1 шт
@@ -45,7 +52,7 @@ def isdish(string):
 # преобразуем ингридиенты из книги в словарь для использования
 # ингридиент | сколько | в чём измеряется
 def ingridients(string):
-    '''преобразуем ингридиенты из книги в словарь
+    '''преобразует ингридиенты из книги в словарь
     ожидаемый формат ингридиентов в кулинарной книге:
     ингридиент | сколько | в чём измеряется
     '''
@@ -111,22 +118,25 @@ def get_shop_list_by_dishes (dishes, person_count, cook_book):
     '''возвращает список продуктов для магазина'''
     shop_list = {}
     for dish in dishes:
-    for ingridient in cook_book[dish]:
-      new_shop_list_item = dict(ingridient)
-      new_shop_list_item['quantity'] *= person_count
-      if new_shop_list_item['ingridient_name'] not in shop_list:
-        shop_list[new_shop_list_item['ingridient_name']] = new_shop_list_item
-      else:
-        shop_list[new_shop_list_item['ingridient_name']]['quantity'] += new_shop_list_item['quantity']
+        for ingridient in cook_book[dish]:
+          new_shop_list_item = dict(ingridient)
+          new_shop_list_item['quantity'] *= person_count
+          if new_shop_list_item['ingridient_name'] not in shop_list:
+            shop_list[new_shop_list_item['ingridient_name']] = new_shop_list_item
+          else:
+            shop_list[new_shop_list_item['ingridient_name']]['quantity'] += new_shop_list_item['quantity']
     return  shop_list
 
 
 #  print('{} {} {}'.format(shopt_list_item['ingridient_name'], shopt_list_item['quantity'], shopt_list_item['measure']))
 def print_shop_list(shop_list):
     '''выводит список продуктов для магазина на экран'''
-    print('список продуктов:')
-    for shopt_list_item in shop_list.values():
-        print('{ingridient_name} {quantity} {measure}'.format(**shopt_list_item))
+    if shop_list:
+        print('список продуктов:')
+        for shopt_list_item in shop_list.values():
+            print('{ingridient_name} {quantity} {measure}'.format(**shopt_list_item))
+    else:
+        print('вот  счастье-то, покупать ничего не надо')
 
 # main function
 def create_shop_list():
@@ -137,13 +147,14 @@ def create_shop_list():
         print('вы ввели не число')
         return
     # если блюда в запросе повторяются, то это скорее всего ошибка, исключим их
+    #: блюда, которые прланируется приготовить
     dishes = list(set(input('введите блюда в расчёте на одного человека (через запятую): ').lower().split(', ')))
     print()
     # моя самая большая находка: если передать в функцию просто название
     # списка, а потом с ним чего-нибудь эдакое сотворить!
     # в общем, передаётся, как и в случае с присваиванием
     # только указатель на список. такие дела.
-    cookbook_file = 'cookbook.txt'
+    cookbook_file = 'cookbook.txt' #: имя файла с рецептами
     cook_book = recipes_from_cookbook(cookbook_file, dishes)
     # вычёркиваем блюда, которые не нашли в повареной книге
     forgotten_recipes = check_forgotten(cook_book, dishes)
