@@ -4,7 +4,7 @@
 # ингридиенты получаем из файла с рецептами
 
 
-
+# ниже пример словаря, который получим
 # яичница, 2 шт яиц, 100гр помидоров
 # стейк, мясо 300гр, специи 5 гр, масло 10 мл
 # салат, помидоры 100гр, огурцы 100 гр, масло 100мл, лук 1 шт
@@ -28,7 +28,6 @@
 #   }
 
 
-# определяем комментарии на полях повареной книги, читаем между строк
 def comment(string):
     '''определяет является ли строка комментарием'''
     if (string.strip()[0] == '#') or string == '':
@@ -37,7 +36,6 @@ def comment(string):
         return False
 
 
-# определяет, является ли строка названием блюда
 def isdish(string):
     '''определяет, является ли строка названием блюда:
     исключает пустые строки;
@@ -49,8 +47,6 @@ def isdish(string):
         return False
 
 
-# преобразуем ингридиенты из книги в словарь для использования
-# ингридиент | сколько | в чём измеряется
 def ingridients(string):
     '''преобразует ингридиенты из книги в словарь
     ожидаемый формат ингридиентов в кулинарной книге:
@@ -67,7 +63,6 @@ def ingridients(string):
     return ingr_dic
 
 
-# из книги рецептов формируем словарь, который использовали на лекции.
 def recipes_from_cookbook(cookbook_file, dishes=None):
     '''формирует словарь из книги рецептов, проверяет есть ли блюдо сегодня в меню'''
     recipes = {}
@@ -102,7 +97,6 @@ def recipes_from_cookbook(cookbook_file, dishes=None):
         return recipes
 
 
-# определяем, какие блюда не смогли найти в книге
 def check_forgotten(recipes, dishes):
     '''возвращает названия блюд, которых нет в повареной книге'''
     forgotten_dishes = []
@@ -112,7 +106,6 @@ def check_forgotten(recipes, dishes):
     return forgotten_dishes
 
 
-# функция для получения списка продуктов для магазина
 def get_shop_list_by_dishes (dishes, person_count, cook_book):
     '''возвращает список продуктов для магазина'''
     shop_list = {}
@@ -127,7 +120,6 @@ def get_shop_list_by_dishes (dishes, person_count, cook_book):
     return  shop_list
 
 
-#  print('{} {} {}'.format(shopt_list_item['ingridient_name'], shopt_list_item['quantity'], shopt_list_item['measure']))
 def print_shop_list(shop_list):
     '''выводит список продуктов для магазина на экран'''
     if shop_list:
@@ -137,7 +129,6 @@ def print_shop_list(shop_list):
     else:
         print('вот  счастье-то, покупать ничего не надо')
 
-# main function
 def create_shop_list():
     '''основная функция'''
     try:
