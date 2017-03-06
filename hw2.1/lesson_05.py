@@ -68,9 +68,12 @@ def ingridients(string):
 
 
 # из книги рецептов формируем словарь, который использовали на лекции.
-def recipes_from_cookbook(cookbook_file, dishes=[]):
+def recipes_from_cookbook(cookbook_file, dishes=None):
     '''формирует словарь из книги рецептов, проверяет есть ли блюдо сегодня в меню'''
     recipes = {}
+    # эта конутрукция, чтобы не получить сюрпризов с изменяемым типом
+    if dishes is None:
+        dishes = []
     with open(cookbook_file, 'r') as f:
         for line in f:
             # везде отрезаем символы конца строки и приводим к нижнему регистру
@@ -92,14 +95,10 @@ def recipes_from_cookbook(cookbook_file, dishes=[]):
                     if not comment(line_in):
                         if ingridients(line_in) is not None:
                             recipes[line].append(ingridients(line_in))
-                            line_in = f.readline().strip().lower()
                         else:
                             print('не удалось распознать строку с ингридиентами \"{}\" для блюда \"{}\"'\
                              .format(line_in, line))
-                            line_in = f.readline().strip().lower()
-                    else:
-                        line_in = f.readline().strip().lower()
-
+                    line_in = f.readline().strip().lower()
         return recipes
 
 
@@ -108,7 +107,7 @@ def check_forgotten(recipes, dishes):
     '''возвращает названия блюд, которых нет в повареной книге'''
     forgotten_dishes = []
     for dish in dishes:
-        if dish not in recipes.keys():
+        if dish not in recipes:
             forgotten_dishes.append(dish)
     return forgotten_dishes
 
