@@ -189,4 +189,5 @@ def file_handle():
             print('к сожалению, не удалось определить кодировку файла.')
         print()
 
+
 file_handle()
