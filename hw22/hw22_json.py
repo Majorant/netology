@@ -4,6 +4,7 @@
 # выводит топ10 чаще всего встречающихся слов
 '''
 
+
 # import urllib.parse
 import codecs
 import json
@@ -152,6 +153,7 @@ def top10(words_lst):
     for i in sorted_pairs:
         top10_words.append(i[0])
     return top10_words
+
 
 def print_top10(words_lst):
     '''печатает слова из списка в строку'''
