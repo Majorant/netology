@@ -1,0 +1,50 @@
+# Название блюда
+# Kоличество ингредиентов
+# Название ингредиента | Количество | Единица измерения
+
+Омлет:
+    - ingridient_name: яйца
+      quantity: 2
+      measure: шт
+    - ingridient_name: помидоры
+      quantity: 100
+      measure: гр
+    - ingridient_name: молоко
+      quantity: 150
+      measure: мл
+яичница:
+    - ingridient_name: яйца
+      quantity: 2
+      measure: шт
+    - ingridient_name: помидоры
+      quantity: 100
+      measure: гр
+стейк:
+    - ingridient_name: говядина
+      quantity: 300
+      measure: гр
+    - ingridient_name: специи
+      quantity: 5
+      measure: гр
+    - ingridient_name: масло
+      quantity: 10
+      measure: мл
+#  - говядина | 300 | гр
+#  - специи | 5 | гр
+#  - масло | 10 | мл
+#
+# салат:
+#  - помидоры | 100 | гр
+#  - огурцы | 100 | гр
+#  - масло | 100 | мл
+#  - лук | 1 | шт
+#
+# Мойва на колбасе:
+#  - мойва | 5 | шт
+#  - колбаса | 1 | шт
+#
+# ЛАДА СЕДАН:
+# #тазик салата
+#  - БАКЛАЖАН | 1 | шт
+#  - помидор | 250 | гр
+#  - майонез | 1  ведро
