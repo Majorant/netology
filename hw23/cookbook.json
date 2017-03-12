@@ -1,0 +1,22 @@
+{
+"Омлет": {
+    "яйца": {"quantity" : 2, "measure": "шт"},
+    "помидоры": {"quantity" : 100, "measure": "гр"},
+    "молоко": {"quantity" : 150, "measure": "мл"}
+},
+"Яичница": {
+    "яйца": {"quantity" : 2, "measure": "шт"},
+    "помидоры": {"quantity" : 100, "measure": "гр"}
+},
+"Стейк": {
+    "говядина": {"quantity" : 300, "measure": "гр"},
+    "специи": {"quantity" : 5, "measure": "гр"},
+    "масло": {"quantity" : 10, "measure": "мл"}
+  },
+"салат": {
+    "помидоры": {"quantity" : 100, "measure": "гр"},
+    "огурцы": {"quantity" : 100, "measure": "гр"},
+    "масло": {"quantity" : 100, "measure": "мл"},
+    "лук": {"quantity" : 1, "measure": "шт"}
+    }
+}

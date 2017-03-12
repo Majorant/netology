@@ -123,7 +123,7 @@ def recipes_from_cookbook_yaml(cookbook_file, dishes=None):
         dishes = []
     with open(cookbook_file, 'r') as f:
         cookbook = yaml.load(f)
-        # для 
+        # для
         for recipe in cookbook:
             if recipe.lower() in dishes:
                 recipes[recipe.lower()] = []
@@ -137,6 +137,26 @@ def recipes_from_cookbook_yaml(cookbook_file, dishes=None):
                         line['quantity'] = quantity
                         line['measure'] = measure
                         recipes[recipe.lower()].append(line)
+        return recipes
+
+
+def recipes_from_cookbook_json(cookbook_file, dishes=None):
+    '''формирует словарь из книги рецептов cookbookt.yml'''
+    recipes = {}
+    if dishes is None:
+        dishes = []
+    with open(cookbook_file, 'r') as f:
+        cookbook =json.load(f)
+        # {'ingridient_name': 'помидоры', 'quantity': 100, 'measure': 'гр'},
+        for dish in cookbook:
+            if dish.lower() in dishes:
+                recipes[dish.lower()] = []
+                for ingridient in cookbook[dish]:
+                    line = {}
+                    line['ingridient_name'] = ingridient
+                    line['quantity'] = cookbook[dish][ingridient]['quantity']
+                    line['measure'] = cookbook[dish][ingridient]['measure']
+                    recipes[dish.lower()].append(line)
         return recipes
 
 def check_forgotten(recipes, dishes):
@@ -173,7 +193,7 @@ def print_shop_list(shop_list):
 
 
 def create_shop_list():
-    '''основная функция'''
+    '''основная функция при работе с обычной повареной книгой'''
     try:
         person_count = int(input('введите количество человек: '))
     except ValueError:
@@ -200,9 +220,8 @@ def create_shop_list():
     shop_list = get_shop_list_by_dishes(dishes, person_count, cook_book)
     print_shop_list(shop_list)
 
-
 def create_shop_list_yaml():
-    '''основная функция'''
+    '''основная функция при работе с повареной книгой в формате yaml'''
     try:
         person_count = int(input('введите количество человек: '))
     except ValueError:
@@ -225,6 +244,30 @@ def create_shop_list_yaml():
     shop_list = get_shop_list_by_dishes(dishes, person_count, cook_book)
     print_shop_list(shop_list)
 
+def create_shop_list_json():
+    '''основная функция при работе с повареной книгой в формате json'''
+    try:
+        person_count = int(input('введите количество человек: '))
+    except ValueError:
+        print('вы ввели не число')
+        return
+    # если блюда в запросе повторяются, то это скорее всего ошибка, исключим их
+    #: блюда, которые прланируется приготовить
+    dishes = list(set(input('введите блюда в расчёте на одного человека (через запятую): ').lower().split(', ')))
+    print()
+    cookbook_file = 'cookbook.json' #: имя файла с рецептами
+    cook_book = recipes_from_cookbook_json(cookbook_file, dishes)
+    # вычёркиваем блюда, которые не нашли в повареной книге
+    forgotten_recipes = check_forgotten(cook_book, dishes)
+    if forgotten_recipes:
+        print('рецепты, которые не найдены в повареной книге:')
+        for dish in forgotten_recipes:
+            print(dish)
+    # оставляем в списке только те блюда, рецепты, которых были найдены
+    dishes = list(set(dishes) - set(forgotten_recipes))
+    shop_list = get_shop_list_by_dishes(dishes, person_count, cook_book)
+    print_shop_list(shop_list)
 
 
-create_shop_list_yaml()
+
+create_shop_list_json()
