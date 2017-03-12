@@ -269,5 +269,23 @@ def create_shop_list_json():
     print_shop_list(shop_list)
 
 
+def test_data_dormat():
+    '''функция для тестирования разных форматов данных'''
+    yml = ['1', '1. yaml', 'yml', 'yaml', 'y']
+    jsn = ['2', '2. json', 'jsn', 'j']
+    exit = ['exit', 'e', 'выход', 'в', 'е']
+    while True:
+        print('для выхода: exit, e, выход, в')
+        choice = input('какой формат данных будем тестировать?(1. yaml, 2. json): ')
+        if choice in yml:
+            create_shop_list_yaml()
+        elif choice in jsn:
+            create_shop_list_json()
+        elif choice in exit:
+            return
+        else:
+            print('не получилось разобрать запрос, попробуйте ещё раз, пожалуйста.')
+    return
 
-create_shop_list_json()
+
+test_data_dormat()
