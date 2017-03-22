@@ -123,6 +123,7 @@ def recipes_from_cookbook_yaml(cookbook_file, dishes=None):
         dishes = []
     with open(cookbook_file, 'r') as f:
         cookbook = yaml.load(f)
+        pprint(cookbook)
         # для
         for recipe in cookbook:
             if recipe.lower() in dishes:
@@ -137,6 +138,7 @@ def recipes_from_cookbook_yaml(cookbook_file, dishes=None):
                         line['quantity'] = quantity
                         line['measure'] = measure
                         recipes[recipe.lower()].append(line)
+        pprint(recipes)
         return recipes
 
 
@@ -147,6 +149,7 @@ def recipes_from_cookbook_json(cookbook_file, dishes=None):
         dishes = []
     with open(cookbook_file, 'r') as f:
         cookbook =json.load(f)
+        pprint(cookbook)
         # {'ingridient_name': 'помидоры', 'quantity': 100, 'measure': 'гр'},
         for dish in cookbook:
             if dish.lower() in dishes:
@@ -157,6 +160,7 @@ def recipes_from_cookbook_json(cookbook_file, dishes=None):
                     line['quantity'] = cookbook[dish][ingridient]['quantity']
                     line['measure'] = cookbook[dish][ingridient]['measure']
                     recipes[dish.lower()].append(line)
+        pprint(recipes)
         return recipes
 
 def check_forgotten(recipes, dishes):
