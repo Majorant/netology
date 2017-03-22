@@ -74,7 +74,7 @@ def recipes_from_cookbook(cookbook_file, dishes=None):
     # эта конутрукция, чтобы не получить сюрпризов с изменяемым типом
     if dishes is None:
         dishes = []
-    with open(cookbook_file, 'r') as f:
+    with open(cookbook_file, 'r', encoding='utf8') as f:
         for line in f:
             # везде отрезаем символы конца строки и приводим к нижнему регистру
             line = line.strip().lower()
@@ -110,7 +110,7 @@ def recipes_from_cookbook_yaml_prog(cookbook_file, dishes=None):
     # эта конутрукция, чтобы не получить сюрпризов с изменяемым типом
     if dishes is None:
         dishes = []
-    with open(cookbook_file, 'r') as f:
+    with open(cookbook_file, 'r', encoding='utf8') as f:
         reipes = yaml.load(f)
         return recipes
 
@@ -121,7 +121,7 @@ def recipes_from_cookbook_yaml(cookbook_file, dishes=None):
     # эта конутрукция, чтобы не получить сюрпризов с изменяемым типом
     if dishes is None:
         dishes = []
-    with open(cookbook_file, 'r') as f:
+    with open(cookbook_file, 'r', encoding='utf8') as f:
         cookbook = yaml.load(f)
         pprint(cookbook)
         # для
@@ -147,7 +147,7 @@ def recipes_from_cookbook_json(cookbook_file, dishes=None):
     recipes = {}
     if dishes is None:
         dishes = []
-    with open(cookbook_file, 'r') as f:
+    with open(cookbook_file, 'r', encoding='utf8') as f:
         cookbook =json.load(f)
         pprint(cookbook)
         # {'ingridient_name': 'помидоры', 'quantity': 100, 'measure': 'гр'},
