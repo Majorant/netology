@@ -1,2 +1,2 @@
-# netology_hw21
-netology/hw21
+# netology_homework
+netology homework for groupy PY3
