@@ -8,32 +8,55 @@ import subprocess
 
 def resize_photo(photos, path, size = 200):
     for photo in photos:
+        # print(photo)
         output = os.path.join(path, os.path.basename(photo))
         subprocess.run(['convert', photo, '-resize', str(size), output])
     return
 
 
+def modify_extensions(extensions):
+    exten = extensions.copy()
+    for i in range(len(exten)):
+        if not exten[i].startswith('*.'):
+            exten[i] = '*.' + exten[i]
+        else:
+            continue
+    return exten
+
+
+def input_handle(extensions):
+    default_extension = ['*.jpg']
+    if not extensions:
+        return default_extension
+    else:
+        return modify_extensions(extensions)
+
+
+def create_photos_lst(path, extensions):
+    photos = []
+    for extension in extensions:
+        photos_path = os.path.join(path, extension)
+        photos += glob.glob(photos_path)
+    return photos
+
+
 def main_func():
     # define, where photos
-    #print('введите путь до папки с фотографиями и расширения, с которыми предполагается работать чрез пробел:')
-    #inp_lst = input('input path to photos and extensions (default: Source and *.jpg)')
+    print('введите расширения, с которыми предполагается работать, через пробел:')
+    inp_lst = input('input extensions (by default jpg): ').split()
+    extension = input_handle(inp_lst)
 
-    realpath = os.path.dirname(os.path.realpath(__file__))
     # меняем рабочую папку на папку с файлом
+    realpath = os.path.dirname(os.path.realpath(__file__))
     os.chdir(realpath)
-    # input_path = 'Source'
-    # extension = '*.jpg'
-    path_to_photo = os.path.join('Source', '*.jpg')
-    photos_lst = glob.glob(path_to_photo)
+    # каталог с фотографиями
+    path_to_photo = os.path.join(realpath, 'Source')
+    # каталог для результатов
+    result_path = os.path.join(realpath, 'Result')
+    photos_lst = create_photos_lst(path_to_photo, extension)
     # создаём папку Result/, если её нет
-    result_path = os.path.join('Result')
-    # try:
-    #     os.mkdir(result_path)
-    # except FileExistsError:
-    #     pass
     if not os.path.exists(result_path):
         os.mkdir(result_path)
 
     resize_photo(photos_lst, result_path)
-
 main_func()
