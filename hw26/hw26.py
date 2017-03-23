@@ -12,7 +12,8 @@ def resize_photo(photos, path, size = 200):
     for photo in photos:
         # os.path.basename(photo) возвращает имя каждго файла
         output = os.path.join(path, os.path.basename(photo))
-        subprocess.run(['convert', photo, '-resize', str(size), output])
+        #subprocess.run(['convert', photo, '-resize', str(size), output])
+        proc = subprocess.Popen(['convert', photo, '-resize', str(size), output])
 
 
 def modify_extensions(extensions):
@@ -66,5 +67,5 @@ def main_func():
     # меняем размер изображений, складываем в result_path
     resize_photo(photos_lst, result_path)
 
-    
+
 main_func()
