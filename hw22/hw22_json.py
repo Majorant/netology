@@ -1,12 +1,11 @@
-'''
+"""
 # ДЗ 2.2
 # программа по заданным четырём файлам в формате json (xml)
 # выводит топ10 чаще всего встречающихся слов
 # опубликовано с помощью PyCharm
-'''
+"""
 
 
-# import urllib.parse
 import codecs
 import json
 import re
@@ -15,7 +14,7 @@ from xml.etree.ElementTree import ParseError
 
 
 def isxml(file_name):
-    '''прроверяет является ли файл xml по расширению )'''
+    """прроверяет является ли файл xml по расширению )"""
     # если подать json формат в файле bb.xml, то упадёт
     if file_name.endswith('.xml'):
         return True
@@ -24,9 +23,9 @@ def isxml(file_name):
 
 
 def check_encoding(file_name):
-    '''возвращает кодировку в файле
+    """возвращает кодировку в файле
     для этого открывает его, проверяет есть ли слово 'новости'' в заголовке
-    '''
+    """
     # по внутренним ощещениями это жуткий костыль, но ничего интереснее не придумал (
     # решение из группы:
     # import chardet
@@ -55,9 +54,9 @@ def check_encoding(file_name):
                     continue
             # при попытке парсинга могут попасться символы, которые not allowed:
             # set(['&#x08;', '&#x0E;', '&#x1E;', '&#x1C;', '&#x18;', '&#x04;',
-            #'&#x0A;', '&#x0C;', '&#x16;', '&#x14;', '&#x06;', '&#x00;', '&#x10;
-            #', '&#x02;', '&#x0D;', '&#x1D;', '&#x0F;', '&#x09;', '&#x1B;',
-            #'&#x05;', '&#x15;', '&#x01;', '&#x03;'])
+            # '&#x0A;', '&#x0C;', '&#x16;', '&#x14;', '&#x06;', '&#x00;', '&#x10;
+            # ', '&#x02;', '&#x0D;', '&#x1D;', '&#x0F;', '&#x09;', '&#x1B;',
+            # '&#x05;', '&#x15;', '&#x01;', '&#x03;'])
             except ParseError:
                 continue
         else:
@@ -77,9 +76,9 @@ def check_encoding(file_name):
 
 
 def xml_text_to_list(file_name, encode):
-    '''для файлов формата xml возвращает список слов в статьях
+    """для файлов формата xml возвращает список слов в статьях
     на вход получает имя файла *.xml, кодировку
-    возвращает список слов со всех статей в lowercase'''
+    возвращает список слов со всех статей в lowercase"""
     words_lst = []
     parser = ET.XMLParser(encoding=encode)
     tree = ET.parse(file_name, parser=parser)
@@ -92,9 +91,9 @@ def xml_text_to_list(file_name, encode):
 
 
 def json_text_to_list(file_name, encode):
-    '''для файлов формата json возвращает список слов в статьях
+    """для файлов формата json возвращает список слов в статьях
     на вход получает имя файла *.json, кодировку
-    возвращает список слов со всех статей в lowercase'''
+    возвращает список слов со всех статей в lowercase"""
     words_lst = []
     with codecs.open(file_name, encoding=encode) as news:
         js = json.load(news)
@@ -107,15 +106,16 @@ def json_text_to_list(file_name, encode):
                 temp_lst = remove_waste_chars(article['description']['__cdata'])
             elif type(article['description']) is str:
                 temp_lst = remove_waste_chars(article['description'])
+            else:
+                temp_lst = []
             #: article data
             words_lst += temp_lst
     return words_lst
 
 
 def text_to_list(file_name):
-    '''на вход получает имя файла,
-    возвращает список слов со всех статей в lowercase'''
-    words_lst = []
+    """на вход получает имя файла,
+    возвращает список слов со всех статей в lowercase"""
     # определяем кодировку файла
     encode = check_encoding(file_name)
     # если не смогли определить кодировку
@@ -129,8 +129,8 @@ def text_to_list(file_name):
 
 
 def remove_waste_chars(string):
-    '''выбирает слова по регулярному выражению:
-    r'[а-яА-Я]{6,}'''
+    """выбирает слова по регулярному выражению:
+    r'[а-яА-Я]{6,}"""
     # регулярное выражение: слова на русском, более 6 символов
     reg = r'[а-яА-Я]{6,}'
     words_lst = re.findall(reg, string, re.IGNORECASE)
@@ -138,7 +138,7 @@ def remove_waste_chars(string):
 
 
 def top10(words_lst):
-    '''возвращает список топ10 слов по содержанию входного списка'''
+    """возвращает список топ10 слов по содержанию входного списка"""
     dict_words = {}
     for word in words_lst:
         if word.lower() in dict_words:
@@ -157,7 +157,7 @@ def top10(words_lst):
 
 
 def print_top10(words_lst):
-    '''печатает слова из списка в строку'''
+    """печатает слова из списка в строку"""
     for i in range(0, len(words_lst)):
         if i != len(words_lst)-1:
             print(words_lst[i], end=', ')
@@ -166,9 +166,9 @@ def print_top10(words_lst):
 
 
 def file_handle():
-    '''основная функция
+    """основная функция
     пробегает по списку файлов, высчитывает и выводит топ10 слов, встречающихся
-    в текстах статей'''
+    в текстах статей"""
     file_list_json = [
         'newsfr.json',
         'newsafr.json',
@@ -181,7 +181,7 @@ def file_handle():
     ]
     for js_file in file_list_json:
         print('для файла \"{}\" top-10 слов:'.format(js_file))
-        #top10_words = json_handle(js_file)
+        # top10_words = json_handle(js_file)
         words_lst = text_to_list(js_file)
         if words_lst is not None:
             top10_words = top10(words_lst)
