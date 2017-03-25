@@ -4,16 +4,55 @@
 import glob
 import os
 import subprocess
+import threading
+import queue
+
+
+def one_thread(que):
+    """один поток для обработки одной фотографии"""
+    while True:
+        # берём параметры из очереди
+        params = que.get()
+        # условие завершения потока
+        if params is None:
+            return
+        subprocess.run(params)
+        que.task_done()
 
 
 def resize_photo(photos, path, size = 200):
     '''функция вызывает внешнюю программу imsgemagick и передаёт параметры
     subprocess.run() работает только в версиях 3,5 и выше'''
+    '''функция вызывает внешнюю программу imagemagick и передаёт параметры
+    subprocess.run() работает только в версиях 3,5 и выше'''
+    # количество потоков
+    num_worker_threads = 4
+    # очередь
+    que = queue.Queue()
+    # список потоков
+    threads = []
+    for i in range(num_worker_threads):
+        # создаём поток
+        thread = threading.Thread(target=one_thread, args=(que,))
+        # запускаем
+        thread.start()
+        # добавляем в список
+        threads.append(thread)
     for photo in photos:
         # os.path.basename(photo) возвращает имя каждго файла
         output = os.path.join(path, os.path.basename(photo))
-        #subprocess.run(['convert', photo, '-resize', str(size), output])
-        proc = subprocess.Popen(['convert', photo, '-resize', str(size), output])
+        # добавляем список команд, которые будет вызывать run() в очередь
+        que.put(['convert', photo, '-resize', str(size), output])
+    # block until all tasks are done
+    # ждём, пока все потоки не завершаться - one_thread
+    que.join()
+    # пишем в очередь None, каждый поток, когда получит None - завершится.
+    for i in range(num_worker_threads):
+        que.put(None)
+    # нам нет причин ждать завершения всех потоков
+    # for thread in threads:
+    #     thread.join()
+    #     # print(thread.name, 'stopped')
 
 
 def modify_extensions(extensions):
