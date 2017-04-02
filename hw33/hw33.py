@@ -86,9 +86,23 @@ def save_to_file(filename, text):
 
 
 def main():
+    """
+    основная функция.
+    если в качестве входного пути указать файл,
+    то переведёт только его,
+    если путь, то будет искать там файлы по умолчанию
+    ['DE.txt', 'ES.txt', 'FR.txt']
+
+    """
     input_files_path = input('укажите путь к файлам для перевода '
                              '(по умолчанию используется текущая папка): ')
     input_path = find_path(input_files_path)
+    if os.path.isfile(input_path):
+        lst_texts = []
+        input_path, filename = os.path.split(input_path)
+        lst_texts.append(filename)
+    else:
+        lst_texts = ['DE.txt', 'ES.txt', 'FR.txt']
 
     output_files_path = input('укажите путь, куда сложить переведённый текст '
                               '(по умолчанию используется текущая папка): ')
@@ -106,7 +120,7 @@ def main():
         lang = output_lang.lower().strip()
     else:
         lang = input_lang.lower().strip() + '-' + output_lang.lower().strip()
-    lst_texts = ['DE.txt', 'ES.txt', 'FR.txt']
+
     for txt_file in lst_texts:
         print('работаем с ', txt_file)
         text = text_from_file(os.path.join(input_path, txt_file))
