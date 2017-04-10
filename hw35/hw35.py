@@ -3,13 +3,13 @@ from pprint import pprint
 import requests
 
 
-AUTHORIZE_URL = 'https://oauth.yandex.ru/authorize'
-APP_ID = 'ea4e1e951785496f89fbf73450961742'  # Your app_id here
-
-auth_data = {
-    'response_type': 'token',
-    'client_id': APP_ID
-}
+# AUTHORIZE_URL = 'https://oauth.yandex.ru/authorize'
+# APP_ID = 'ea4e1e951785496f89fbf73450961742'  # Your app_id here
+#
+# auth_data = {
+#     'response_type': 'token',
+#     'client_id': APP_ID
+# }
 # print('?'.join((AUTHORIZE_URL, urlencode(auth_data))))
 
 TOKEN = 'AQAAAAABnnujAAQLkvvGNGEutExkpOhmUpcHsSA'  # token here
