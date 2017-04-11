@@ -5,6 +5,7 @@ import requests
 TOKEN = 'AQAAAAABnnujAAQLkvvGNGEutExkpOhmUpcHsSA'  # token here
 
 class YandexMetrika(object):
+    """базовый класс"""
     _METRIKA_STAT_URL = 'https://api-metrika.yandex.ru/stat/v1/'
     _METRIKA_MANAGEMENT_URL = 'https://api-metrika.yandex.ru/management/v1/'
     token = None
@@ -21,7 +22,7 @@ class YandexMetrika(object):
 
 
 class YandexMetrika_management(YandexMetrika):
-
+    """класс API управления"""
     @property
     def counter_list(self):
         url = urljoin(self._METRIKA_MANAGEMENT_URL, 'counters')
@@ -33,7 +34,11 @@ class YandexMetrika_management(YandexMetrika):
 
 
 class YandexMetrika_stat(YandexMetrika):
+    """класс API статистики
+    можно наследовать от YandexMetrika_management, тогда не нужно будет
+    переписывать __init__()
 
+    """
     def __init__(self, token, counter_id):
         self.token = token
         self.counter_id = counter_id
@@ -46,7 +51,6 @@ class YandexMetrika_stat(YandexMetrika):
             'id': counter_id,
             'metrics': 'ym:s:visits'
         }
-
         response = requests.get(url, params, headers=headers)
         # print(response.headers['Content-Type'])
         # pprint(response.json())
@@ -88,6 +92,6 @@ metrika = YandexMetrika_stat(TOKEN, ids)
 #
 for counter in ids.counter_list:
 # for counter in metrika.counter_list:
-    print(metrika.get_visits_count(counter))
-    print(metrika.get_pageviews_count(counter))
-    print(metrika.get_users_count(counter))
+    print('количество визитов: {}'.format(metrika.get_visits_count(counter)))
+    print('количество просмотров: {}'.format(metrika.get_pageviews_count(counter)))
+    print('количество уникальных ползователей: {}'.format(metrika.get_users_count(counter)))
