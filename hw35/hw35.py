@@ -2,18 +2,7 @@ from urllib.parse import urlencode, urlparse, urljoin
 from pprint import pprint
 import requests
 
-
-# AUTHORIZE_URL = 'https://oauth.yandex.ru/authorize'
-# APP_ID = 'ea4e1e951785496f89fbf73450961742'  # Your app_id here
-#
-# auth_data = {
-#     'response_type': 'token',
-#     'client_id': APP_ID
-# }
-# print('?'.join((AUTHORIZE_URL, urlencode(auth_data))))
-
 TOKEN = 'AQAAAAABnnujAAQLkvvGNGEutExkpOhmUpcHsSA'  # token here
-
 
 class YandexMetrika(object):
     _METRIKA_STAT_URL = 'https://api-metrika.yandex.ru/stat/v1/'
@@ -30,6 +19,9 @@ class YandexMetrika(object):
             'User-Agent': 'bb'
         }
 
+
+class YandexMetrika_management(YandexMetrika):
+
     @property
     def counter_list(self):
         url = urljoin(self._METRIKA_MANAGEMENT_URL, 'counters')
@@ -39,6 +31,13 @@ class YandexMetrika(object):
         counter_list = [c['id'] for c in response.json()['counters']]
         return counter_list
 
+
+class YandexMetrika_stat(YandexMetrika):
+
+    def __init__(self, token, counter_id):
+        self.token = token
+        self.counter_id = counter_id
+
     def get_visits_count(self, counter_id):
         """возвращает количество визитов"""
         url = urljoin(self._METRIKA_STAT_URL, 'data')
@@ -47,6 +46,7 @@ class YandexMetrika(object):
             'id': counter_id,
             'metrics': 'ym:s:visits'
         }
+
         response = requests.get(url, params, headers=headers)
         # print(response.headers['Content-Type'])
         # pprint(response.json())
@@ -62,8 +62,8 @@ class YandexMetrika(object):
             'metrics': 'ym:s:pageviews'
         }
         response = requests.get(url, params, headers=headers)
-        visits_count = response.json()['data'][0]['metrics'][0]
-        return visits_count
+        pageviews_count = response.json()['data'][0]['metrics'][0]
+        return pageviews_count
 
     def get_users_count(self, counter_id):
         """возвращает количество уникальных пользователей"""
@@ -74,11 +74,11 @@ class YandexMetrika(object):
             'metrics': 'ym:s:users'
         }
         response = requests.get(url, params, headers=headers)
-        visits_count = response.json()['data'][0]['metrics'][0]
-        return visits_count
+        users_count = response.json()['data'][0]['metrics'][0]
+        return users_count
 
-
-metrika = YandexMetrika(TOKEN)
+ids = YandexMetrika_management(TOKEN)
+metrika = YandexMetrika_stat(TOKEN, ids)
 # print('YandexMetrika')
 # pprint(YandexMetrika.__dict__)
 # print('metrika')
@@ -86,7 +86,8 @@ metrika = YandexMetrika(TOKEN)
 
 # print(metrika.counter_list)
 #
-for counter in metrika.counter_list:
+for counter in ids.counter_list:
+# for counter in metrika.counter_list:
     print(metrika.get_visits_count(counter))
     print(metrika.get_pageviews_count(counter))
     print(metrika.get_users_count(counter))
