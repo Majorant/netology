@@ -16,15 +16,20 @@ def user_info(user_ids, par=PARAMS):
     params = par.copy()
     params['user_ids'] = user_ids
     response = requests.get('https://api.vk.com/method/users.get', params)
-    if not error_in_resp(response.json()):
+    try:
         return response.json()['response'][0]['id']
+    except KeyError:
+        return None
+    # if not error_in_resp(response.json()):
+    #     return response.json()['response'][0]['id']
 
 
 def input_test_user():
     """ввод и обработка входных данных, возвращает id пользователя
     или None, если распознать ввод не удалось
+
     """
-    test_id = 0
+    test_id = None
     inp = input('введите ник или id для теста: ')
     try:
         test_id = int(inp)
@@ -32,10 +37,9 @@ def input_test_user():
         if inp.lower().startswith('id'):
             test_id = inp[2:]
         else:
-            if user_info(inp):
-                test_id = user_info(inp)
-    if test_id:
-        return test_id
+            test_id = user_info(inp)
+
+    return test_id
 
 
 def get_friends(user_id=None, par=PARAMS):
@@ -56,18 +60,6 @@ def get_groups(user_id=None, par=PARAMS):
     return response.json()
 
 
-def error_in_resp(response):
-    """функция проверки ошибок в ответе от сервера
-    True, если ошибки есть
-    False - если ошибок нет
-
-    """
-    if 'error' in response:
-        return True
-    else:
-        return False
-
-
 def write_progress(val):
     """функция для работы с командной строкой, организует вывод"""
     sys.stdout.flush()
@@ -86,14 +78,18 @@ def get_target_groups(test_id):
         write_progress('\rпроверено {} из {}'.format(count, friends['response']['count']))
         sleep(0.35)
         response = get_groups(friend_id)
-        if not error_in_resp(response):
+        try:
             friend_id_groups = set(response['response']['items'])
             groups -= friend_id_groups
-        else:
-            if response['error']['error_msg'] == 'Too many requests per second':
-                sleep(1)
-            else:
-                print('\n', response['error']['error_msg'])
+        except KeyError:
+            try:
+                if response['error']['error_msg'] == 'Too many requests per second':
+                    sleep(1)
+                else:
+                    print('\n', response['error']['error_msg'])
+            except KeyError as e:
+                print('unknown answer in get_target_groups: ', response)
+
     print()
 
     return groups
@@ -105,13 +101,17 @@ def get_group_name(g_id, par=PARAMS):
     name = ''
     params['group_id'] = g_id
     response = requests.get('https://api.vk.com/method/groups.getById', params).json()
-    if 'deactivated' not in response and not error_in_resp(response):
-        name = response['response'][0]['name']
-    else:
-        if response['error']['error_msg'] == 'Too many requests per second':
-            return None
-        else:
-            print('\n', response['error']['error_msg'])
+    try:
+        if 'deactivated' not in response:
+            name = response['response'][0]['name']
+    except KeyError:
+        try:
+            if response['error']['error_msg'] == 'Too many requests per second':
+                return None
+            else:
+                print('\n', response['error']['error_msg'])
+        except KeyError as e:
+            print('unknown answer get_group_name: ', response)
 
     return name
 
@@ -122,14 +122,26 @@ def get_group_count_members(g_id, par=PARAMS):
     members_count = 0
     params['group_id'] = g_id
     params['count'] = 1
-    response = requests.get('https://api.vk.com/method/groups.getMembers', params).json()
-    if not error_in_resp(response):
-        members_count = response['response']['count']
-    else:
-        if response['error']['error_msg'] == 'Too many requests per second':
+    response = requests.get('https://api.vk.com/method/groups.getMembers', params)
+    try:
+        members_count = response.json()['response']['count']
+    except KeyError:
+        try:
+            if response.json()['error']['error_msg'] == 'Too many requests per second':
+                sleep(1)
+                return None
+            else:
+                print('\n', response.json()['error']['error_msg'])
+        except KeyError:
             return None
-        else:
-            print('\n', response['error']['error_msg'])
+
+    # if not error_in_resp(response):
+    #     members_count = response['response']['count']
+    # else:
+    #     if response['error']['error_msg'] == 'Too many requests per second':
+    #         return None
+    #     else:
+    #         print('\n', response['error']['error_msg'])
 
     return members_count
 
