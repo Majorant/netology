@@ -50,7 +50,7 @@ def get_friends(user_id=None, par=PARAMS):
     if user_id:
         params['user_id'] = user_id
     response = requests.get('https://api.vk.com/method/friends.get', params)
-    if response.status_code == 200:
+    if response.status_code == 200:        
         try:
             return response.json()['response']['items']
         except KeyError:
@@ -139,6 +139,7 @@ def get_groups_info(groups, par=PARAMS):
     for count in range(len(groups)//500+1):
         write_progress('\rзапрос API для получения информации о группе {}'.format(count+1))
         sleep(0.35)
+        # формируем строку ВК-скрипта, st - это строка, разделённых через запятую id групп
         st = ','.join(map(str, groups[count*500:(count+1)*500]))
         code = 'return[API.groups.getById({\"group_ids\": "' + st + '\", \"fields\": \"members_count\"})];'
         params['code'] = code
